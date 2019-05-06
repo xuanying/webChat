@@ -1,6 +1,5 @@
 package com.chy.webchatserver.entity;
 
-import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -8,15 +7,10 @@ import java.util.List;
  * @Date 2019/4/29
  * @Email 1625640688@qq.com
  */
-@Entity
-@Table(name = "menu")
 public class Menu {
-    @Id
-    @GeneratedValue
+
     private Long id;
-    @Column
     private String url;
-    @OneToMany
     private List<Role> roles;
 
     public Long getId() {

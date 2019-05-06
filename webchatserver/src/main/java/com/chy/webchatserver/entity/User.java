@@ -4,24 +4,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "user")
+
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue
+
     private Integer id;
-    @Column
+    private String name;
     private String username;
     private String password;
-    @OneToMany
     private List<User> friends;
-    @OneToMany
     private List<Role> roles;
 
     public Integer getId() {
@@ -30,6 +25,14 @@ public class User implements UserDetails {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setUsername(String username) {

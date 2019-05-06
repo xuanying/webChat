@@ -1,21 +1,47 @@
 package com.chy.webchatserver.config;
 
+import com.chy.webchatserver.entity.Menu;
+import com.chy.webchatserver.entity.Role;
+import com.chy.webchatserver.service.MenuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @Author chy
  * @Date 2019/4/29
  * @Email 1625640688@qq.com
  */
+@Component
 public class CustomMetadataSource implements FilterInvocationSecurityMetadataSource {
 
+    @Autowired
+    MenuService menuService;
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        return null;
+        String requestUrl = ((FilterInvocation)o).getRequestUrl();
+        List<Menu> allMenu = menuService.getAllMenu();
+        for(Menu menu : allMenu){
+            if(antPathMatcher.match(menu.getUrl(),requestUrl) && menu.getRoles().size()>0){
+                List<Role> roles = menu.getRoles();
+                int size = roles.size();
+                String[] values = new String[size];
+                for(int i=0;i<size;i++){
+                    values[i] = roles.get(i).getName();
+                }
+                return SecurityConfig.createList(values);
+            }
+        }
+        return SecurityConfig.createList("ROLE_LOGIN");
     }
 
     @Override
@@ -25,6 +51,6 @@ public class CustomMetadataSource implements FilterInvocationSecurityMetadataSou
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return false;
+        return FilterInvocation.class.isAssignableFrom(aClass);
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chy.webchatserver.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.chy.webchatserver.entity.User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+    </resultMap>
+    <resultMap id="lazyUser" type="com.chy.webchatserver.entity.User" extends="BaseResultMap">
+        <collection property="friends" ofType="com.chy.webchatserver.entity.User"/>
+        <collection property="roles" ofType="com.chy.webchatserver.entity.Role"/>
+    </resultMap>
+    <resultMap id="LoadRolesAndFriends" type="com.chy.webchatserver.entity.User" extends="BaseResultMap">
+        <collection property="friends" ofType="com.chy.webchatserver.entity.User">
+            <id column="id" property="id"/>
+            <result column="username" property="username"/>
+            <result column="password" property="password"/>
+        </collection>
+        <collection property="roles" ofType="com.chy.webchatserver.entity.Role">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findUserByUsername" resultMap="lazyUser">
+        select * from user where username=#{username}
+    </select>
+</mapper>

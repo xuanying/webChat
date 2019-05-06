@@ -1,19 +1,15 @@
 package com.chy.webchatserver.entity;
 
-import javax.persistence.*;
 
 /**
  * @Author chy
  * @Date 2019/4/29
  * @Email 1625640688@qq.com
  */
-@Entity
-@Table(name = "role")
+
 public class Role {
-    @Id
-    @GeneratedValue
+
     private Long id;
-    @Column
     private String name;
 
     public Long getId() {
