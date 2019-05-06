@@ -21,6 +21,7 @@ public class TestController {
     @RequestMapping("/findUser")
     public User findUser(){
         User user = (User) userService.findUserByUsername("yufei");
+        System.out.println(user.getFriends().get(0).getName());
         return user;
     }
 

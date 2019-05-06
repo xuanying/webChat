@@ -10,22 +10,34 @@
         <result column="password" property="password"/>
     </resultMap>
     <resultMap id="lazyUser" type="com.chy.webchatserver.entity.User" extends="BaseResultMap">
-        <collection property="friends" ofType="com.chy.webchatserver.entity.User"/>
-        <collection property="roles" ofType="com.chy.webchatserver.entity.Role"/>
+        <collection property="friends" ofType="com.chy.webchatserver.entity.User"
+        select="com.chy.webchatserver.mapper.UserMapper.getFriendsByUserId" column="id">
+        </collection>
+        <collection property="roles" ofType="com.chy.webchatserver.entity.Role"
+        select="getRolesByUserId" column="id">
+        </collection>
     </resultMap>
     <resultMap id="LoadRolesAndFriends" type="com.chy.webchatserver.entity.User" extends="BaseResultMap">
         <collection property="friends" ofType="com.chy.webchatserver.entity.User">
-            <id column="id" property="id"/>
-            <result column="username" property="username"/>
-            <result column="password" property="password"/>
+            <id column="fid" property="id"/>
+            <result column="fusername" property="username"/>
         </collection>
         <collection property="roles" ofType="com.chy.webchatserver.entity.Role">
-            <id column="id" property="id"/>
-            <result column="name" property="name"/>
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
         </collection>
     </resultMap>
 
     <select id="findUserByUsername" resultMap="lazyUser">
         select * from user where username=#{username}
     </select>
+    <select id="getFriendsByUserId" resultType="com.chy.webchatserver.entity.User">
+        select f.* from user_friend uf,user f where uf.fid=f.id and uf.uid=#{id}
+    </select>
+    <select id="getRolesByUserId" resultType="com.chy.webchatserver.entity.Role">
+        select r.* from user_role ur,role r where ur.rid=r.id and ur.uid=#{id}
+    </select>
+    <!--select u.*,r.id as rid,r.name as rname,f.id as fid,f.username as fusername from user u left join
+    user_friend uf on u.id=uf.uid left join user f on uf.fid=f.id
+    where u.username=#{username}-->
 </mapper>

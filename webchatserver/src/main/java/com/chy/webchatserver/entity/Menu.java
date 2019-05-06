@@ -1,5 +1,6 @@
 package com.chy.webchatserver.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * @Date 2019/4/29
  * @Email 1625640688@qq.com
  */
-public class Menu {
+public class Menu implements Serializable {
 
     private Long id;
     private String url;
