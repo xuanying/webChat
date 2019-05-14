@@ -1,26 +1,28 @@
 package com.chy.webchatserver.suanfati;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-
 public class Main{
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
-        char[] ch = sc.next().toCharArray();
-        int count = 0;
-        StringBuffer sb = new StringBuffer();
-        for(char c:ch){
-            if(c == '[') count++;
-            else {
-                if(count == 0) sb.insert(0,'[');
-                else count--;
+        String[] str = sc.next().split(",");
+        int[] a = new int[str.length];
+        char[] ch = {'A','B','C'};
+        int k = 0;
+        for(int i=0;i<str.length;i++){
+            a[i] = Integer.parseInt(str[i]);
+            k ^= a[i];
+        }
+        if(k == 0){
+            System.out.println(1);
+        }else{
+            for(int i=0;i<str.length;i++){
+                int num = k^a[i];
+                int temxor = num^num;
+                if(a[i]-num>=0 && temxor==0){
+                    System.out.println(ch[i] + "," + (a[i]-num));
+                    break;
+                }
             }
-            sb.append(c);
         }
-        while (count>0){
-            sb.append(']');
-            count--;
-        }
-        System.out.println(sb.toString());
     }
 }

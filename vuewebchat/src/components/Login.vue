@@ -14,6 +14,8 @@
     <el-form-item style="width: 100%">
       <el-button type="primary" style="width: 100%" @click="submitClick">登录</el-button>
     </el-form-item>
+    <el-button type="danger" style="width: 50%" @click="test">测试按钮</el-button>
+    <el-button type="danger" style="width: 60%" @click="corstest">测试跨域</el-button>
   </el-form>
 </template>
 <script>
@@ -37,22 +39,65 @@
     },
     methods:{
       submitClick:function () {
+        /*let param = new URLSearchParams()
+        param.append('username',this.loginForm.username)
+        param.append('password',this.loginForm.password)*/
         axios({
-          url:'http://localhost:8081/login',
-          method:'get',
+          url:'/login',
+          method:'post',
           data:{
             username: this.loginForm.username,
-            password: this.loginForm.password
+            password:this.loginForm.password
+          },
+          transformRequest: [function (data) {
+            let ret = ''
+            for (let it in data) {
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+          }],
+          header:{
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
         }).then(response=>{
           console.log(response)
           if(response.status == 200){
+            console.log("dengluchegng")
             this.$router.push({
               name:'Home',
               params:{
                 frends:response.obj
               }
             })
+          }
+        }).catch(error=>{
+          alert(error)
+        })
+      },
+      test:function () {
+        axios({
+          url: "/test/findUser",
+          method: "get"
+        }).then(response=>{
+          if(response.status == 200 ){
+            console.log(response.data)
+          }
+        }).catch(error=>{
+          alert(error)
+        })
+      },
+      corstest:function () {
+        axios({
+          url:"/test/corsTest",
+          method:"post",
+          data:{
+            username:this.loginForm.username,
+            password:this.loginForm.password
+          }
+        }).then(response=>{
+          if(response.status == 200){
+            alert(response.data)
+            console.log(response.data)
           }
         }).catch(error=>{
           alert(error)

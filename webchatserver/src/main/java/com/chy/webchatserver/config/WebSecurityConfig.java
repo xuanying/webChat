@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -49,12 +51,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/index.html","/static/**","/login_p","/test/**");
+        web.ignoring()
+//                .antMatchers(HttpMethod.OPTIONS)
+                .antMatchers("/index.html","/static/**","/login_p","/test/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry
+                = http.authorizeRequests();
+        registry.requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
+*/
         http.authorizeRequests()
+//                .antMatchers(HttpMethod.OPTIONS).permitAll()
+//                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
@@ -65,6 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
+                .usernameParameter("username").passwordParameter("password")
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -106,6 +117,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout().permitAll()
+                .and().cors()
                 .and().csrf().disable()
                 .exceptionHandling().accessDeniedHandler(deniedHandler);
     }

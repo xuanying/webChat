@@ -5,6 +5,8 @@ import com.chy.webchatserver.entity.User;
 import com.chy.webchatserver.service.MenuService;
 import com.chy.webchatserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +31,11 @@ public class TestController {
     public List<Menu> getAllMenus(){
         List<Menu> menuList = menuService.getAllMenu();
         return menuList;
+    }
+
+    @PostMapping("/corsTest")
+    public String corstest(@RequestBody User user){
+        return "username:" + user.getUsername() +">>"+ "password:" + user.getPassword();
     }
 
 }
